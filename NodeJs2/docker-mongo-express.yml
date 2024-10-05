@@ -1,0 +1,40 @@
+version: "3.1"
+
+services:
+  mongodb:
+    image: mongo
+    container_name: TOPCODER_MONGO
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: _TOPCODER
+      MONGO_INITDB_ROOT_PASSWORD: _FULLSTACK
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - docker-mongo-express
+  mongo-express:
+    image: mongo-express
+    container_name: TOPCODER_MONGO_WEB_EXPRESS
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: _TOPCODER
+      ME_CONFIG_MONGODB_ADMINPASSWORD: _FULLSTACK
+      ME_CONFIG_MONGODB_SERVER: TOPCODER_MONGO
+      ME_CONFIG_BASICAUTH_USERNAME: topcoder
+      ME_CONFIG_BASICAUTH_PASSWORD: 123456abc
+    networks:
+      - docker-mongo-express
+    depends_on:
+      - mongodb
+networks:
+    docker-mongo-express:
+      driver: bridge
+    default:
+      name: docker-mongo-express
+volumes:
+  mongodb-data:
+    driver: local
